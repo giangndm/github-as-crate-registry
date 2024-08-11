@@ -450,26 +450,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "40ecd4077b5ae9fd2e9e169b102c6c330d0605168eb0e8bf79952b256dbefffd"
 
 [[package]]
-name = "github-as-crate-registry"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.1",
- "clap",
- "futures-util",
- "http-body-util",
- "hyper 0.14.30",
- "log",
- "octocrab",
- "poem",
- "serde",
- "serde_json",
- "sha1",
- "sha256",
- "tokio",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "h2"
 version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1092,6 +1072,26 @@ name = "powerfmt"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "439ee305def115ba05938db6eb1644ff94165c5ab5e9420d1c1bcedbba909391"
+
+[[package]]
+name = "private-crate-hub"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "clap",
+ "futures-util",
+ "http-body-util",
+ "hyper 0.14.30",
+ "log",
+ "octocrab",
+ "poem",
+ "serde",
+ "serde_json",
+ "sha1",
+ "sha256",
+ "tokio",
+ "tracing-subscriber",
+]
 
 [[package]]
 name = "proc-macro-crate"
