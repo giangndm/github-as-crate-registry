@@ -18,4 +18,5 @@ FROM ubuntu:22.04
 
 COPY --from=base /private-crate-hub /private-crate-hub
 
+EXPOSE 3000
 ENTRYPOINT ["/private-crate-hub"]

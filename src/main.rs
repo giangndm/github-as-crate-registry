@@ -3,7 +3,10 @@ use futures_util::StreamExt;
 use http_body_util::BodyExt;
 use octocrab::params::repos::Reference;
 use poem::middleware::Tracing;
-use std::sync::Arc;
+use std::{
+    net::{IpAddr, Ipv4Addr, SocketAddr},
+    sync::Arc,
+};
 
 use crates_new_payload::CratesPayload;
 use poem::{
@@ -32,6 +35,10 @@ struct Context {
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
+    /// Http port
+    #[arg(short, env, long, default_value_t = 3000)]
+    port: u16,
+
     /// Owner of repo
     #[arg(short, env, long)]
     owner: String,
@@ -85,10 +92,13 @@ async fn main() {
         .data(Arc::new(ctx))
         .with(Tracing);
 
-    Server::new(TcpListener::bind("0.0.0.0:3000"))
-        .run(app)
-        .await
-        .expect("Should run");
+    Server::new(TcpListener::bind(SocketAddr::new(
+        IpAddr::V4(Ipv4Addr::UNSPECIFIED),
+        args.port,
+    )))
+    .run(app)
+    .await
+    .expect("Should run");
 }
 
 #[derive(Serialize)]
