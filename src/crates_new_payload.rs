@@ -2,9 +2,7 @@ use poem::{error::BadRequest, FromRequest, Request, RequestBody, Result};
 use tokio::io::AsyncReadExt;
 
 pub struct CratesPayload {
-    pub meta_len: u32,
     pub meta_buf: Vec<u8>,
-    pub crate_len: u32,
     pub crate_buf: Vec<u8>,
 }
 
@@ -42,9 +40,7 @@ impl<'a> FromRequest<'a> for CratesPayload {
             String::from_utf8_lossy(&meta_buf)
         );
         Ok(CratesPayload {
-            meta_len,
             meta_buf,
-            crate_len,
             crate_buf,
         })
     }
