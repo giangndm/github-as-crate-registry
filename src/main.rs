@@ -23,7 +23,7 @@ struct Context {
     owner: String,
     repo: String,
     branch: String,
-    authorization: String,
+    authorization: Option<String>,
     public_endpoint: String,
     instance: octocrab::Octocrab,
 }
@@ -46,7 +46,7 @@ struct Args {
 
     /// Authorization fixed token
     #[arg(short, env, long)]
-    authorization: String,
+    authorization: Option<String>,
 
     /// Github Token for access repo
     #[arg(short, env, long)]
@@ -113,6 +113,7 @@ struct CrateMeta {
 struct GetConfigRes {
     dl: String,
     api: String,
+    #[serde(rename = "auth-required")]
     auth_required: bool,
 }
 
@@ -121,7 +122,7 @@ async fn get_config(Data(data): Data<&Arc<Context>>) -> poem::Result<Json<GetCon
     Ok(Json(GetConfigRes {
         dl: format!("{}/index", data.public_endpoint),
         api: data.public_endpoint.clone(),
-        auth_required: false,
+        auth_required: data.authorization.is_some(),
     }))
 }
 
@@ -131,9 +132,9 @@ async fn get_pkg(
     token: BearerToken,
     Path((_be, _md, pkg)): Path<(String, String, String)>,
 ) -> impl IntoResponse {
-    if !token.0.eq(&data.authorization) {
+    if data.authorization.is_some() && !Some(token.0).eq(&data.authorization) {
         return Response::builder()
-            .status(StatusCode::UNAUTHORIZED)
+            .status(StatusCode::FORBIDDEN)
             .header("Content-Type", "text/plain")
             .body("No permissioned");
     }
@@ -159,10 +160,10 @@ async fn down_pkg(
     token: BearerToken,
     Path((pkg, ver)): Path<(String, String)>,
 ) -> poem::Result<Vec<u8>> {
-    if !token.0.eq(&data.authorization) {
+    if data.authorization.is_some() && !Some(token.0).eq(&data.authorization) {
         return Err(poem::Error::from_string(
             "No permissioned".to_string(),
-            StatusCode::UNAUTHORIZED,
+            StatusCode::FORBIDDEN,
         ));
     }
 
@@ -180,10 +181,10 @@ async fn create_pkg(
     token: BearerToken,
     payload: CratesPayload,
 ) -> poem::Result<Json<CreateNewResponse>> {
-    if !token.0.eq(&data.authorization) {
+    if data.authorization.is_some() && !Some(token.0).eq(&data.authorization) {
         return Err(poem::Error::from_string(
             "No permissioned".to_string(),
-            StatusCode::UNAUTHORIZED,
+            StatusCode::FORBIDDEN,
         ));
     }
 
