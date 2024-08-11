@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  SERVER_NAME: github-as-crate-registry
+  SERVER_NAME: private-crate-hub
   ARTIFACT_DIR: release-builds
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
