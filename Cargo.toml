@@ -1,6 +1,6 @@
 [package]
 name = "private-crate-hub"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 description = "A private Rust crate registry that securely stores your crate data in a GitHub repository, simplifying management and distribution while ensuring version control, backups, and access only for authorized users."
