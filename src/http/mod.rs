@@ -48,7 +48,16 @@ struct GetConfigRes {
 }
 
 #[handler]
-pub async fn get_config(Data(data): Data<&Arc<HttpContext>>) -> poem::Result<Json<GetConfigRes>> {
+pub async fn get_config(
+    Data(data): Data<&Arc<HttpContext>>,
+    token: AuthToken,
+) -> poem::Result<Json<GetConfigRes>> {
+    if data.authorization.is_some() && !token.0.eq(&data.authorization) {
+        return Err(poem::Error::from_string(
+            "No permissioned".to_string(),
+            StatusCode::UNAUTHORIZED,
+        ));
+    }
     Ok(Json(GetConfigRes {
         dl: format!("{}/index", data.endpoint),
         api: data.endpoint.clone(),
@@ -64,7 +73,7 @@ pub async fn get_pkg(
 ) -> impl IntoResponse {
     if data.authorization.is_some() && !token.0.eq(&data.authorization) {
         return Response::builder()
-            .status(StatusCode::FORBIDDEN)
+            .status(StatusCode::UNAUTHORIZED)
             .header("Content-Type", "text/plain")
             .body("No permissioned");
     }
@@ -90,7 +99,7 @@ pub async fn down_pkg(
     if data.authorization.is_some() && !token.0.eq(&data.authorization) {
         return Err(poem::Error::from_string(
             "No permissioned".to_string(),
-            StatusCode::FORBIDDEN,
+            StatusCode::UNAUTHORIZED,
         ));
     }
 
@@ -112,7 +121,7 @@ pub async fn create_pkg(
     if data.authorization.is_some() && !token.0.eq(&data.authorization) {
         return Err(poem::Error::from_string(
             "No permissioned".to_string(),
-            StatusCode::FORBIDDEN,
+            StatusCode::UNAUTHORIZED,
         ));
     }
 
