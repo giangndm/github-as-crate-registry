@@ -75,7 +75,7 @@ pub async fn get_pkg(
             .header("Content-Type", "application/json")
             .body(content),
         Err(e) => Response::builder()
-            .status(StatusCode::INTERNAL_SERVER_ERROR)
+            .status(StatusCode::NOT_FOUND)
             .header("Content-Type", "text/plain")
             .body(e.to_string()),
     }
