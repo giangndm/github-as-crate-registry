@@ -26,7 +26,7 @@ You can quickly get started with Private-Crate-Hub using Docker. This method req
 docker pull giangndm/private-crate-hub:latest
 ```
 
-2. ** Run with Environment Variables **
+2. **Run with Environment Variables**
 
 You can run the Private-Crate-Hub Docker container with the following environment variables:
 
@@ -44,14 +44,14 @@ docker run -e GITHUB_TOKEN=your_github_token \
            -e OWNER=your_github_username_or_org \
            -e REPO=your_repository_name \
            -e BRANCH=your_branch_name \
-           -e PUBLIC_ENDPOINT=https://your-public-endpoint.com \
+           -e PUBLIC_ENDPOINT=http://your-public-endpoint.com \
            -e AUTHORIZATION=your_authorization_token \
            giangndm/private-crate-hub:latest
 ```
 
 ### Using in a Rust Project
 
-1. ** Cargo Configuration **:
+1. **Cargo Configuration**:
 
 ```toml
 [registry]
@@ -61,7 +61,7 @@ global-credential-providers = ["cargo:token"]
 my-registry = { index = "sparse+http://your-public-endpoint.com/index/" }
 ```
 
-2. ** Dependencies **:
+2. **Dependencies**:
 
 Add the `registry` field to each private library:
 
