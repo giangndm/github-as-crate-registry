@@ -56,18 +56,15 @@ pub async fn get_config(Data(data): Data<&Arc<HttpContext>>) -> poem::Result<Jso
     }))
 }
 
+// As described in https://doc.rust-lang.org/cargo/reference/registry-index.html, only bellow apis is sent with auth header:
+// - APIs (it is `api: data.endpoint.clone()`)
+// - crate download
+// - crate index updates
 #[handler]
 pub async fn get_pkg(
     Data(data): Data<&Arc<HttpContext>>,
-    token: AuthToken,
     Path((_be, _md, pkg)): Path<(String, String, String)>,
 ) -> impl IntoResponse {
-    if data.authorization.is_some() && !token.0.eq(&data.authorization) {
-        return Response::builder()
-            .status(StatusCode::UNAUTHORIZED)
-            .header("Content-Type", "text/plain")
-            .body("No permissioned");
-    }
     log::info!("get_pkg {pkg}");
     match data.storage.get_crate(&pkg).await {
         Ok(content) => Response::builder()
