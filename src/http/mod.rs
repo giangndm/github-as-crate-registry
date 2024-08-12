@@ -48,16 +48,7 @@ struct GetConfigRes {
 }
 
 #[handler]
-pub async fn get_config(
-    Data(data): Data<&Arc<HttpContext>>,
-    token: AuthToken,
-) -> poem::Result<Json<GetConfigRes>> {
-    if data.authorization.is_some() && !token.0.eq(&data.authorization) {
-        return Err(poem::Error::from_string(
-            "No permissioned".to_string(),
-            StatusCode::UNAUTHORIZED,
-        ));
-    }
+pub async fn get_config(Data(data): Data<&Arc<HttpContext>>) -> poem::Result<Json<GetConfigRes>> {
     Ok(Json(GetConfigRes {
         dl: format!("{}/index", data.endpoint),
         api: data.endpoint.clone(),
