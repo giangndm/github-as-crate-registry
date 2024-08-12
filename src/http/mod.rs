@@ -17,7 +17,7 @@ mod crates_payload;
 
 pub struct HttpContext {
     pub authorization: Option<String>,
-    pub public_endpoint: String,
+    pub endpoint: String,
     pub storage: Storage,
 }
 
@@ -50,8 +50,8 @@ struct GetConfigRes {
 #[handler]
 pub async fn get_config(Data(data): Data<&Arc<HttpContext>>) -> poem::Result<Json<GetConfigRes>> {
     Ok(Json(GetConfigRes {
-        dl: format!("{}/index", data.public_endpoint),
-        api: data.public_endpoint.clone(),
+        dl: format!("{}/index", data.endpoint),
+        api: data.endpoint.clone(),
         auth_required: data.authorization.is_some(),
     }))
 }

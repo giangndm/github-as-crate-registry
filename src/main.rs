@@ -40,7 +40,7 @@ struct Args {
 
     /// Branch
     #[arg(short, env, long)]
-    public_endpoint: String,
+    endpoint: String,
 }
 
 #[tokio::main]
@@ -60,7 +60,7 @@ async fn main() {
         .at("/index/:p1/:p2/:p3", get(get_pkg))
         .data(Arc::new(HttpContext {
             authorization: args.authorization,
-            public_endpoint: args.public_endpoint,
+            endpoint: args.endpoint,
             storage,
         }))
         .with(Tracing);
