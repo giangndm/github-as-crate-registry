@@ -16,6 +16,8 @@ RUN case $TARGETPLATFORM in \
 
 FROM ubuntu:22.04
 
+RUN apt-get update && apt-get install -y ca-certificates libssl-dev && rm -rf /var/lib/apt/lists/*
+
 COPY --from=base /private-crate-hub /private-crate-hub
 
 EXPOSE 3000
