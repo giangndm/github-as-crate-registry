@@ -56,19 +56,18 @@ pub async fn get_config(Data(data): Data<&Arc<HttpContext>>) -> poem::Result<Jso
     }))
 }
 
-// TODO: protect this API
 #[handler]
 pub async fn get_pkg(
     Data(data): Data<&Arc<HttpContext>>,
-    // token: AuthToken,
+    token: AuthToken,
     Path((_be, _md, pkg)): Path<(String, String, String)>,
 ) -> impl IntoResponse {
-    // if data.authorization.is_some() && !Some(token.0).eq(&data.authorization) {
-    //     return Response::builder()
-    //         .status(StatusCode::FORBIDDEN)
-    //         .header("Content-Type", "text/plain")
-    //         .body("No permissioned");
-    // }
+    if data.authorization.is_some() && !token.0.eq(&data.authorization) {
+        return Response::builder()
+            .status(StatusCode::FORBIDDEN)
+            .header("Content-Type", "text/plain")
+            .body("No permissioned");
+    }
     log::info!("get_pkg {pkg}");
     match data.storage.get_crate(&pkg).await {
         Ok(content) => Response::builder()
@@ -88,7 +87,7 @@ pub async fn down_pkg(
     token: AuthToken,
     Path((pkg, ver)): Path<(String, String)>,
 ) -> poem::Result<Vec<u8>> {
-    if data.authorization.is_some() && !Some(token.0).eq(&data.authorization) {
+    if data.authorization.is_some() && !token.0.eq(&data.authorization) {
         return Err(poem::Error::from_string(
             "No permissioned".to_string(),
             StatusCode::FORBIDDEN,
@@ -110,7 +109,7 @@ pub async fn create_pkg(
     token: AuthToken,
     payload: CratesPayload,
 ) -> poem::Result<Json<CreateNewResponse>> {
-    if data.authorization.is_some() && !Some(token.0).eq(&data.authorization) {
+    if data.authorization.is_some() && !token.0.eq(&data.authorization) {
         return Err(poem::Error::from_string(
             "No permissioned".to_string(),
             StatusCode::FORBIDDEN,

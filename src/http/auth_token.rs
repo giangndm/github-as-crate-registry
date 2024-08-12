@@ -3,7 +3,7 @@ use poem::{
     FromRequest,
 };
 
-pub struct AuthToken(pub String);
+pub struct AuthToken(pub Option<String>);
 
 impl<'a> FromRequest<'a> for AuthToken {
     fn from_request(
@@ -17,13 +17,8 @@ impl<'a> FromRequest<'a> for AuthToken {
     ) -> impl std::future::Future<Output = poem::Result<Self>> + Send {
         async move {
             log::info!("[AuthToken] check headers {:?}", req.headers());
-            if let Some(header) = req.header(AUTHORIZATION) {
-                return Ok(AuthToken(header.to_string()));
-            }
-            Err(poem::Error::from_string(
-                "Missing AUTHORIZATION",
-                StatusCode::UNAUTHORIZED,
-            ))
+            let token = req.header(AUTHORIZATION).map(|h| h.to_owned());
+            Ok(AuthToken(token))
         }
     }
 }
